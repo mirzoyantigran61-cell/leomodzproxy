@@ -1,0 +1,22 @@
+{
+  "name": "YourTigranmods Tools",
+  "short_name": "TNM Tools",
+  "description": "50+ инструментов + AI в одном приложении",
+  "start_url": "/tools",
+  "display": "standalone",
+  "background_color": "#090909",
+  "theme_color": "#FF0000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2103/2103633.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2103/2103633.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
