@@ -813,6 +813,7 @@ def tg_handle_command(chat_id, text):
         return
 
   # ============ AI ============
+# ============ AI ============
 if cmd.startswith("/"):
     tg_send(chat_id, "❓ Неизвестная команда. /help")
     return
