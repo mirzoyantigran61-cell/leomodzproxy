@@ -313,7 +313,241 @@ def tg_notify_admin(text):
     if TELEGRAM_ADMIN_ID and TELEGRAM_BOT_TOKEN:
         tg_send(TELEGRAM_ADMIN_ID, text)
 
+def tg_owner_ai_agent(chat_id, text):
+    """AI-агент управления для Owner. Понимает команды на естественном языке."""
+    if not OPENAI_API_KEY:
+        return None
+    system_prompt = (
+        "Ты AI-агент управления Telegram-ботом TIGRAN MODZ для OWNER.\n"
+        "Пользователь даёт команды на естественном языке (русский, английский, любой).\n"
+        "Ты должен ВЕРНУТЬ ТОЛЬКО валидный JSON без markdown, без пояснений.\n\n"
+        "Формат ответа:\n"
+        '{"action": "ТИП", "params": {...}}\n\n'
+        "Доступные action:\n"
+        "- create_key: создать ключ. params: {\"custom_key\": \"если хотят точный ключ\", \"prefix\": \"TIGRAN-MDZ-PROXY\", \"limit\": 1, \"days\": 7}\n"
+        "- revoke_key: удалить ключ. params: {\"key\": \"...\"}\n"
+        "- list_keys: показать все ключи. params: {}\n"
+        "- list_sessions: активные сессии. params: {}\n"
+        "- list_admins: список админов. params: {}\n"
+        "- add_admin: добавить админа. params: {\"id\": \"123456789\", \"role\": \"admin|superadmin\"}\n"
+        "- del_admin: удалить админа. params: {\"id\": \"123456789\"}\n"
+        "- set_role: сменить роль. params: {\"id\": \"123456789\", \"role\": \"admin|superadmin\"}\n"
+        "- stats: статистика. params: {}\n"
+        "- backup: экспорт данных. params: {}\n"
+        "- help: справка. params: {}\n"
+        "- chat: если это НЕ команда управления, а просто вопрос. params: {\"question\": \"текст вопроса\"}\n\n"
+        "ВНИМАНИЕ: если пользователь просто спрашивает/общается — верни {\"action\":\"chat\",\"params\":{\"question\":\"<его вопрос>\"}}\n"
+        "Примеры:\n"
+        "'создай ключ TIGRAN-MDZ-PROXY-893YKP8S09' → {\"action\":\"create_key\",\"params\":{\"custom_key\":\"TIGRAN-MDZ-PROXY-893YKP8S09\"}}\n"
+        "'создай ключ на 30 дней лимит 5' → {\"action\":\"create_key\",\"params\":{\"limit\":5,\"days\":30}}\n"
+        "'удали ключ ABC-123' → {\"action\":\"revoke_key\",\"params\":{\"key\":\"ABC-123\"}}\n"
+        "'сколько ключей?' → {\"action\":\"stats\",\"params\":{}}\n"
+        "'как дела?' → {\"action\":\"chat\",\"params\":{\"question\":\"как дела?\"}}\n"
+    )
+    try:
+        r = requests.post(
+            "https://api.openai.com/v1/chat/completions",
+            headers={"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"},
+            json={
+                "model": "gpt-4o-mini",
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": text[:1500]}
+                ],
+                "max_tokens": 300,
+                "temperature": 0.1
+            },
+            timeout=25
+        )
+        if r.status_code != 200:
+            print(f"[OwnerAI] HTTP {r.status_code}")
+            return None
+        content = r.json()['choices'][0]['message']['content'].strip()
+        # Убираем ```json ... ```
+        content = re.sub(r'^```(?:json)?\s*|\s*```$', '', content, flags=re.MULTILINE).strip()
+        # Иногда AI добавляет текст — берём первую {...}
+        m = re.search(r'\{[\s\S]*\}', content)
+        if m:
+            content = m.group(0)
+        return json.loads(content)
+    except Exception as e:
+        print(f"[OwnerAI] error: {e}")
+        return None
 
+
+def tg_owner_execute_ai(chat_id, action_data):
+    """Выполняет действие от AI-агента. Возвращает True если выполнено, False — если это просто chat."""
+    act = action_data.get('action', 'chat')
+    params = action_data.get('params') or {}
+
+    if act == 'chat':
+        return False  # отдаём дальше обычному AI
+
+    if act == 'create_key':
+        custom = params.get('custom_key')
+        if custom:
+            new_key = normalize_key(custom)
+            if new_key in generated_keys:
+                tg_send(chat_id, f"⚠️ Ключ уже существует: <code>{new_key}</code>")
+                return True
+        else:
+            new_key = generate_key(params.get('prefix', 'TIGRAN-MDZ-PROXY'))
+        try: limit = max(1, int(params.get('limit', 1)))
+        except: limit = 1
+        try: days = max(1, int(params.get('days', 7)))
+        except: days = 7
+        generated_keys[new_key] = {
+            'prefix': new_key.rsplit('-', 1)[0] if '-' in new_key else 'TIGRAN-MDZ-PROXY',
+            'limit': limit, 'days': days,
+            'created': datetime.now().isoformat(), 'used_ips': []
+        }
+        save_data()
+        tg_log("ai_genkey", chat_id, new_key)
+        tg_send(chat_id,
+            f"🤖 <b>AI создал ключ</b>\n\n<code>{new_key}</code>\n\n"
+            f"Лимит IP: {limit}\nДней: {days}")
+        return True
+
+    if act == 'revoke_key':
+        key = normalize_key(params.get('key', ''))
+        if key in generated_keys:
+            for ip in generated_keys[key]['used_ips']:
+                registered_ips.pop(ip, None); key_expiry.pop(ip, None)
+            del generated_keys[key]; save_data()
+            tg_log("ai_revoke", chat_id, key)
+            tg_send(chat_id, f"🤖 <b>AI удалил ключ:</b>\n<code>{key}</code>")
+        else:
+            tg_send(chat_id, f"🤖 Ключ <code>{key}</code> не найден.")
+        return True
+
+    if act == 'list_keys':
+        if not generated_keys:
+            tg_send(chat_id, "🤖 Ключей нет.")
+            return True
+        lines = ["🤖 <b>Ключи:</b>\n"]
+        for k, v in list(generated_keys.items())[:30]:
+            lines.append(f"<code>{k}</code> — {len(v['used_ips'])}/{v['limit']} · {v['days']}d")
+        tg_send(chat_id, "\n".join(lines))
+        return True
+
+    if act == 'list_sessions':
+        if not registered_ips:
+            tg_send(chat_id, "🤖 Нет активных сессий.")
+            return True
+        lines = ["🤖 <b>Сессии:</b>\n"]
+        for ip, key in list(registered_ips.items())[:30]:
+            exp = key_expiry.get(ip)
+            exp_str = exp.strftime('%d/%m/%Y') if exp else '-'
+            lines.append(f"<code>{ip}</code> — {key} · до {exp_str}")
+        tg_send(chat_id, "\n".join(lines))
+        return True
+
+    if act == 'list_admins':
+        data = load_admins_data()
+        admins = data.get('admins', [])
+        lines = [f"🤖 👑 <b>Owner:</b> <code>{TELEGRAM_ADMIN_ID}</code>\n"]
+        if admins:
+            lines.append(f"⭐🎖 <b>Админы ({len(admins)}):</b>")
+            for a in admins:
+                em = role_emoji(a.get('role', 'admin'))
+                lines.append(f"{em} <code>{a.get('id')}</code> [{a.get('role','admin')}]")
+        else:
+            lines.append("(кроме owner никого)")
+        tg_send(chat_id, "\n".join(lines))
+        return True
+
+    if act == 'add_admin':
+        new_id = str(params.get('id', '')).strip()
+        new_role = (params.get('role') or 'admin').lower()
+        if not new_id.isdigit():
+            tg_send(chat_id, "🤖 ID должен быть числом.")
+            return True
+        if new_role not in ('admin', 'superadmin'):
+            new_role = 'admin'
+        if new_id == str(TELEGRAM_ADMIN_ID):
+            tg_send(chat_id, "🤖 Это уже owner.")
+            return True
+        data = load_admins_data()
+        if any(str(a.get('id')) == new_id for a in data['admins']):
+            tg_send(chat_id, f"🤖 <code>{new_id}</code> уже админ.")
+            return True
+        data['admins'].append({
+            "id": new_id, "name": "", "role": new_role,
+            "added_by": str(chat_id), "added_at": datetime.now().isoformat()
+        })
+        save_admins_data(data)
+        tg_log("ai_addadmin", chat_id, f"{new_id}:{new_role}")
+        em = role_emoji(new_role)
+        tg_send(chat_id, f"🤖 ✅ {em} Добавлен <code>{new_id}</code> [{new_role}]")
+        try: tg_send(new_id, f"{em} Тебя назначили ({new_role}) в TIGRAN MODZ BOT!\nНапиши /help")
+        except: pass
+        return True
+
+    if act == 'del_admin':
+        del_id = str(params.get('id', '')).strip()
+        data = load_admins_data()
+        if not any(str(a.get('id')) == del_id for a in data['admins']):
+            tg_send(chat_id, f"🤖 <code>{del_id}</code> не найден.")
+            return True
+        data['admins'] = [a for a in data['admins'] if str(a.get('id')) != del_id]
+        save_admins_data(data)
+        tg_log("ai_deladmin", chat_id, del_id)
+        tg_send(chat_id, f"🤖 🗑 Удалён <code>{del_id}</code>")
+        try: tg_send(del_id, "⚠️ Твои права админа отозваны.")
+        except: pass
+        return True
+
+    if act == 'set_role':
+        tgt_id = str(params.get('id', '')).strip()
+        new_role = (params.get('role') or '').lower()
+        if new_role not in ('admin', 'superadmin'):
+            tg_send(chat_id, "🤖 Роль: admin или superadmin.")
+            return True
+        data = load_admins_data()
+        found = False
+        for a in data['admins']:
+            if str(a.get('id')) == tgt_id:
+                a['role'] = new_role; found = True; break
+        if not found:
+            tg_send(chat_id, f"🤖 <code>{tgt_id}</code> не найден.")
+            return True
+        save_admins_data(data)
+        tg_log("ai_setrole", chat_id, f"{tgt_id}:{new_role}")
+        tg_send(chat_id, f"🤖 ✅ <code>{tgt_id}</code> → {role_emoji(new_role)} {new_role}")
+        return True
+
+    if act == 'stats':
+        tg_send(chat_id,
+            f"🤖 <b>Статистика</b>\n\n"
+            f"Ключей: {len(generated_keys)}\n"
+            f"Активных IP: {len(registered_ips)}\n"
+            f"AI-запросов: {sum(len(v) for v in _ai_requests.values())}\n"
+            f"Админов: {1 + len(load_admins_data().get('admins', []))}")
+        return True
+
+    if act == 'backup':
+        try:
+            payload = {
+                "generated_keys": generated_keys,
+                "registered_ips": registered_ips,
+                "key_expiry": {k: v.isoformat() for k, v in key_expiry.items()},
+                "admins": load_admins_data(),
+                "exported_at": datetime.now().isoformat()
+            }
+            text_b = json.dumps(payload, ensure_ascii=False, indent=2)
+            if len(text_b) < 3500:
+                tg_send(chat_id, f"🤖 <b>Backup</b>\n\n<pre>{text_b}</pre>")
+            else:
+                for i in range(0, len(text_b), 3500):
+                    tg_send(chat_id, f"<pre>{text_b[i:i+3500]}</pre>")
+        except Exception as e:
+            tg_send(chat_id, f"🤖 Ошибка: {e}")
+        return True
+
+    if act == 'help':
+        return False  # пусть покажет стандартный /help
+
+    return False
 def tg_handle_command(chat_id, text):
     role = get_user_role(chat_id)
     if role == "guest":
@@ -578,16 +812,34 @@ def tg_handle_command(chat_id, text):
         return
 
     # ============ AI ============
-    if cmd.startswith("/"):
-        tg_send(chat_id, "❓ Неизвестная команда. /help")
-        return
+    # ============ AI ============
+if cmd.startswith("/"):
+    tg_send(chat_id, "❓ Неизвестная команда. /help")
+    return
 
-    if not OPENAI_API_KEY:
-        tg_send(chat_id, "🤖 AI не настроен (нет OPENAI_API_KEY).")
-        return
-    user_msg = text.strip()
-    if not user_msg: return
-    tg_send(chat_id, "🤖 <i>Думаю...</i>")
+if not OPENAI_API_KEY:
+    tg_send(chat_id, "🤖 AI не настроен (нет OPENAI_API_KEY).")
+    return
+user_msg = text.strip()
+if not user_msg: return
+
+# ==== OWNER AI-АГЕНТ ====
+# Если это owner — сначала пробуем распознать команду управления
+if role == "owner":
+    tg_send(chat_id, "🧠 <i>Анализирую...</i>")
+    action_data = tg_owner_ai_agent(chat_id, user_msg)
+    if action_data:
+        executed = tg_owner_execute_ai(chat_id, action_data)
+        if executed:
+            return
+        # если action=chat — идём к обычному AI (но уберём "Анализирую...")
+        # просто продолжаем ниже
+    else:
+        # Не распознали — продолжаем как обычный AI
+        pass
+
+# ==== ОБЫЧНЫЙ AI-ЧАТ ====
+tg_send(chat_id, "🤖 <i>Думаю...</i>")
     try:
         r = requests.post(
             "https://api.openai.com/v1/chat/completions",
