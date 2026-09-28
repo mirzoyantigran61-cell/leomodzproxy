@@ -444,16 +444,6 @@ def verify_key():
         session['unlocked'] = True
         return jsonify({'success': True, 'message': 'JÁ REGISTRADO'})
 
-@app.route('/verify', methods=['POST'])
-def verify_key():
-    client_ip = get_client_ip()
-    data = request.get_json(silent=True) or {}
-    key = normalize_key(data.get('key', ''))
-
-    if client_ip in registered_ips:
-        session['unlocked'] = True
-        return jsonify({'success': True, 'message': 'JÁ REGISTRADO'})
-
     if key not in generated_keys:
         if not user_configs and not generated_keys:
             load_data()
@@ -471,6 +461,7 @@ def verify_key():
     session['unlocked'] = True
     save_data()
 
+    
     return jsonify({
         'success': True,
         'message': 'KEY VERIFICADA COM SUCESSO',
