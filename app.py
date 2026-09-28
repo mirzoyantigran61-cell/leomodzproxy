@@ -592,14 +592,13 @@ def verify_key():
     session['unlocked'] = True
     save_data()
 
-    
     tg_notify_admin(f"Новый вход\n\nIP: <code>{client_ip}</code>\nКлюч: <code>{key}</code>\nДо: {expiry_date.strftime('%d/%m/%Y')}")
 
-return jsonify({
-    'success': True,
-    'message': 'KEY VERIFICADA COM SUCESSO',
-    'expires': expiry_date.isoformat()
-})
+    return jsonify({
+        'success': True,
+        'message': 'KEY VERIFICADA COM SUCESSO',
+        'expires': expiry_date.isoformat()
+    })
 # ============ PROXY ROUTES - NO KEY REQUIRED ============
 @app.route('/ver.php', methods=['GET'])
 @app.route('/live/ver.php', methods=['GET'])
