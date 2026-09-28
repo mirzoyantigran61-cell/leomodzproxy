@@ -938,22 +938,24 @@ def unlock():
     # ==================== TOOLS PAGE ====================
 @app.route('/tools')
 def tools_page():
+    """Отдаёт HTML-файл с инструментами"""
     if not session.get('unlocked'):
         return redirect(url_for('landing'))
-    """Отдаёт HTML-файл с инструментами"""
     try:
         with open(os.path.join(BASE_DIR, 'tools.html'), 'r', encoding='utf-8') as f:
             return f.read()
     except FileNotFoundError:
         return "tools.html not found", 404
-        
-        @app.route('/manifest.json')
+
+
+@app.route('/manifest.json')
 def pwa_manifest():
     try:
         with open(os.path.join(BASE_DIR, 'manifest.json'), 'r', encoding='utf-8') as f:
             return Response(f.read(), mimetype='application/manifest+json')
     except FileNotFoundError:
         return Response('{}', mimetype='application/json')
+
 
 @app.route('/service-worker.js')
 def pwa_sw():
@@ -962,6 +964,7 @@ def pwa_sw():
             return Response(f.read(), mimetype='application/javascript')
     except FileNotFoundError:
         return Response('// not found', mimetype='application/javascript')
+
 
 @app.route('/tools/<path:filename>')
 def tools_assets(filename):
