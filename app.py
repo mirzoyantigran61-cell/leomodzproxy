@@ -476,7 +476,6 @@ def verify_key():
         'message': 'KEY VERIFICADA COM SUCESSO',
         'expires': expiry_date.isoformat()
     })
-
 # ============ PROXY ROUTES - NO KEY REQUIRED ============
 @app.route('/ver.php', methods=['GET'])
 @app.route('/live/ver.php', methods=['GET'])
