@@ -833,36 +833,56 @@ if role == "owner":
     if action_data:
         executed = tg_owner_execute_ai(chat_id, action_data)
         if executed:
-            return
+    # ============ AI ============
+    if cmd.startswith("/"):
+        tg_send(chat_id, "❓ Неизвестная команда. /help")
+        return
 
-# ==== ОБЫЧНЫЙ AI-ЧАТ ====
-tg_send(chat_id, "🤖 <i>Думаю...</i>")
-try:
-    r = requests.post(
-        "https://api.openai.com/v1/chat/completions",
-        headers={"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"},
-        json={
-            "model": "gpt-4o-mini",
-            "messages": [
-                {"role": "system", "content": (
-                    "Ты AI-ассистент в Telegram-боте TIGRAN MODZ. "
-                    "Отвечай кратко (до 500 символов), по делу, на языке пользователя. "
-                    "Ты можешь помочь с ключами, объяснить команды бота, ответить на любые вопросы."
-                )},
-                {"role": "user", "content": user_msg[:1500]}
-            ],
-            "max_tokens": 500,
-            "temperature": 0.7
-        },
-        timeout=25
-    )
-    if r.status_code == 200:
-        reply = r.json()['choices'][0]['message']['content']
-        tg_send(chat_id, reply)
-    else:
-        tg_send(chat_id, f"❌ AI HTTP {r.status_code}")
-except Exception as e:
-    tg_send(chat_id, f"❌ AI ошибка: {str(e)[:120]}")
+    if not OPENAI_API_KEY:
+        tg_send(chat_id, "🤖 AI не настроен (нет OPENAI_API_KEY).")
+        return
+
+    user_msg = text.strip()
+    if not user_msg:
+        return
+
+    # ==== OWNER AI-АГЕНТ ====
+    if role == "owner":
+        tg_send(chat_id, "🧠 <i>Анализирую...</i>")
+        action_data = tg_owner_ai_agent(chat_id, user_msg)
+        if action_data:
+            executed = tg_owner_execute_ai(chat_id, action_data)
+            if executed:
+                return
+
+    # ==== ОБЫЧНЫЙ AI-ЧАТ ====
+    tg_send(chat_id, "🤖 <i>Думаю...</i>")
+    try:
+        r = requests.post(
+            "https://api.openai.com/v1/chat/completions",
+            headers={"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"},
+            json={
+                "model": "gpt-4o-mini",
+                "messages": [
+                    {"role": "system", "content": (
+                        "Ты AI-ассистент в Telegram-боте TIGRAN MODZ. "
+                        "Отвечай кратко (до 500 символов), по делу, на языке пользователя. "
+                        "Ты можешь помочь с ключами, объяснить команды бота, ответить на любые вопросы."
+                    )},
+                    {"role": "user", "content": user_msg[:1500]}
+                ],
+                "max_tokens": 500,
+                "temperature": 0.7
+            },
+            timeout=25
+        )
+        if r.status_code == 200:
+            reply = r.json()['choices'][0]['message']['content']
+            tg_send(chat_id, reply)
+        else:
+            tg_send(chat_id, f"❌ AI HTTP {r.status_code}")
+    except Exception as e:
+        tg_send(chat_id, f"❌ AI ошибка: {str(e)[:120]}")
 
 
 def tg_polling():
@@ -890,6 +910,7 @@ def tg_polling():
 
 if TELEGRAM_BOT_TOKEN:
     threading.Thread(target=tg_polling, daemon=True).start()
+# ========================================================
 # ========================================================
 
 # ==================== DATA PERSISTENCE ====================
