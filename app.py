@@ -966,7 +966,7 @@ def tg_handle_command(chat_id, text):
             "/stats — статистика\n"
         )
         if is_super:
-    help_text += (
+             help_text += (
         "\n🎖 <b>Управление админами:</b>\n"
         "/admins — список всех\n"
         "/addadmin ID [role] — добавить (admin/superadmin)\n"
