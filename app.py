@@ -1048,7 +1048,7 @@ if cmd == "/keys":
         
         if cmd == "/find":
            if not args:
-        tg_send(chat_id, "Использование: <code>/find ЧАСТЬ_КЛЮЧА</code>")
+            tg_send(chat_id, "Использование: <code>/find ЧАСТЬ_КЛЮЧА</code>")
         return
     query = normalize_key(" ".join(args))
     found = []
