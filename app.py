@@ -987,30 +987,30 @@ tg_main_menu(chat_id)
 return
 
 if cmd == "/genkey":
-        prefix = args[0] if len(args) > 0 else "TIGRAN-MDZ-PROXY"
-        try: limit = max(1, int(args[1])) if len(args) > 1 else 1
-        except: limit = 1
-        try: days = max(1, int(args[2])) if len(args) > 2 else 7
-        except: days = 7
-        new_key = generate_key(prefix)
-        generated_keys[new_key] = {
-            'prefix': normalize_key(prefix) or "TIGRAN-MDZ-PROXY",
-            'limit': limit, 'days': days,
-            'created': datetime.now().isoformat(), 'used_ips': []
-        }
-        save_data()
-        tg_log("genkey", chat_id, new_key)
-        tg_send(chat_id, f"✅ <b>Ключ создан</b>\n\n<code>{new_key}</code>\n\nЛимит IP: {limit}\nДней: {days}")
-        return
+    prefix = args[0] if len(args) > 0 else "TIGRAN-MDZ-PROXY"
+    try: limit = max(1, int(args[1])) if len(args) > 1 else 1
+    except: limit = 1
+    try: days = max(1, int(args[2])) if len(args) > 2 else 7
+    except: days = 7
+    new_key = generate_key(prefix)
+    generated_keys[new_key] = {
+        'prefix': normalize_key(prefix) or "TIGRAN-MDZ-PROXY",
+        'limit': limit, 'days': days,
+        'created': datetime.now().isoformat(), 'used_ips': []
+    }
+    save_data()
+    tg_log("genkey", chat_id, new_key)
+    tg_send(chat_id, f"✅ <b>Ключ создан</b>\n\n<code>{new_key}</code>\n\nЛимит IP: {limit}\nДней: {days}")
+    return
 
-    if cmd == "/keys":
-        if not generated_keys:
-            tg_send(chat_id, "Нет ключей."); return
-        lines = ["📋 <b>Ключи:</b>\n"]
-        for k, v in list(generated_keys.items())[:30]:
-            lines.append(f"<code>{k}</code> — {len(v['used_ips'])}/{v['limit']} · {v['days']}d")
-        tg_send(chat_id, "\n".join(lines))
-        return
+if cmd == "/keys":
+    if not generated_keys:
+        tg_send(chat_id, "Нет ключей."); return
+    lines = ["📋 <b>Ключи:</b>\n"]
+    for k, v in list(generated_keys.items())[:30]:
+        lines.append(f"<code>{k}</code> — {len(v['used_ips'])}/{v['limit']} · {v['days']}d")
+    tg_send(chat_id, "\n".join(lines))
+    return
 
     if cmd == "/revoke":
         if not args: tg_send(chat_id, "Использование: /revoke KEY"); return
