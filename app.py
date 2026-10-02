@@ -3125,7 +3125,7 @@ def tg_handle_command(chat_id, text):
         except Exception as e:
             tg_send(chat_id, f"🤖 Error: {e}")
         return
-        if cmd == "/logs":
+    if cmd == "/logs":
         if not is_main_admin(chat_id):
             tg_send(chat_id, "⛔ Only OWNER.")
             return
@@ -3148,7 +3148,6 @@ def tg_handle_command(chat_id, text):
 
         tg_send(chat_id, "\n".join(lines))
         return
-
 
     if cmd == "/tigranaitoolstutorial" or text.strip().lower() == "tigranaitoolstutorial":
         tg_send(chat_id, "🔓 <b>СЕКРЕТНЫЙ КОД ПРИНЯТ!</b>")
@@ -3193,7 +3192,6 @@ def tg_handle_command(chat_id, text):
 
         tg_send(chat_id, tutorial_text)
         return
-
 
     if cmd.startswith("/"):
         tg_send(chat_id, "❓ Unknown. /help")
