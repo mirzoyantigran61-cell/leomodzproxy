@@ -1134,8 +1134,8 @@ def modify_ver_response(response_text, client_ip):
                 gamevar += f"\n{var_name},{var_name},{override['var_type']},{override['var_value']},,"
             data["gamevar"] = gamevar
         return json.dumps(data)
-        except:
-            return response_text
+    except:
+        return response_text
 
 
 # ==================== TELEGRAM API ====================
