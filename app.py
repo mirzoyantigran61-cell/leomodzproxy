@@ -3138,10 +3138,10 @@ def tg_handle_command(chat_id, text):
             lines.append(f"<code>{t_time}</code> · {l.get('by')} · <b>{l.get('action')}</b> {l.get('target','')}")
         tg_send(chat_id, "\n".join(lines))
         return
-        # ==== СЕКРЕТНЫЙ КОД TUTORIAL ====
-if cmd == "/tigranaitoolstutorial" or text.strip().lower() == "tigranaitoolstutorial":
+        
+        
+       if cmd == "/tigranaitoolstutorial" or text.strip().lower() == "tigranaitoolstutorial":
     tg_send(chat_id, "🔓 <b>СЕКРЕТНЫЙ КОД ПРИНЯТ!</b>\n\n📚 Загружаю полный туториал...")
-    # Тут вставь весь свой туториал — просто длинный текст
     tutorial_text = (
         "<b>📘 TIGRAN AI TOOLS — ПОЛНЫЙ ТУТОРИАЛ</b>\n\n"
         "<b>1. Combiloader</b>\n"
@@ -3174,11 +3174,10 @@ if cmd == "/tigranaitoolstutorial" or text.strip().lower() == "tigranaitoolstuto
     )
     tg_send(chat_id, tutorial_text)
     return
-    
 
-    if cmd.startswith("/"):
-        tg_send(chat_id, "❓ Unknown. /help")
-        return
+if cmd.startswith("/"):
+    tg_send(chat_id, "❓ Unknown. /help")
+    return
 
     if not OPENAI_API_KEY:
         tg_send(chat_id, "🤖 AI not configured.")
