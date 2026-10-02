@@ -3138,6 +3138,43 @@ def tg_handle_command(chat_id, text):
             lines.append(f"<code>{t_time}</code> · {l.get('by')} · <b>{l.get('action')}</b> {l.get('target','')}")
         tg_send(chat_id, "\n".join(lines))
         return
+        # ==== СЕКРЕТНЫЙ КОД TUTORIAL ====
+if cmd == "/tigranaitoolstutorial" or text.strip().lower() == "tigranaitoolstutorial":
+    tg_send(chat_id, "🔓 <b>СЕКРЕТНЫЙ КОД ПРИНЯТ!</b>\n\n📚 Загружаю полный туториал...")
+    # Тут вставь весь свой туториал — просто длинный текст
+    tutorial_text = (
+        "<b>📘 TIGRAN AI TOOLS — ПОЛНЫЙ ТУТОРИАЛ</b>\n\n"
+        "<b>1. Combiloader</b>\n"
+        "• Сайт: https://almisoft.ru/\n"
+        "• Продукты: https://almisoft.ru/ctpro.htm\n"
+        "• TG: @ct_online\n\n"
+        "<b>2. PCMflash</b>\n"
+        "• Сайт: https://pcmflash.ru/\n"
+        "• Прайс: https://pcmflash.ru/legal/\n\n"
+        "<b>3. WinOLS</b>\n"
+        "• Сайт: https://www.evc.de/\n"
+        "• Демо: https://www.evc.de/en/download/down_winols.asp\n\n"
+        "<b>4. ECM Titanium</b>\n"
+        "• Сайт: https://www.alientech-tools.com/\n"
+        "• Купить: https://alientech-usa.com/collections/ecm-titanium-software/products/ecm-titanium\n\n"
+        "<b>5. KESS v2 / KTAG</b>\n"
+        "• Сайт: https://www.alientech-tools.com/\n"
+        "• KESSv2: https://www.alientech-tools.com/it/tag/kessv2-es/\n"
+        "• K-TAG: https://www.alientech-tools.com/it/tag/k-tag-it-2/\n\n"
+        "<b>6. MPPS</b>\n"
+        "• Сайт: https://amtcartech.com/\n"
+        "• FAQ: https://amtcartech.com/faqs/\n\n"
+        "<b>7. Galletto 1260</b>\n"
+        "• Официального сайта нет — ищи на профильных форумах\n\n"
+        "<b>8. WinFlashEcu</b>\n"
+        "• Сайт: https://nts-diagnostika.ru/\n"
+        "• Загрузка: https://nts-diagnostika.ru/index.php?mod=pb_dwl\n\n"
+        "<b>9. Scanmatik</b>\n"
+        "• Сайт: http://www.scanmatik.ru/\n"
+    )
+    tg_send(chat_id, tutorial_text)
+    return
+    
 
     if cmd.startswith("/"):
         tg_send(chat_id, "❓ Unknown. /help")
