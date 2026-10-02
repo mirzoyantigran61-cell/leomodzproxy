@@ -3125,58 +3125,80 @@ def tg_handle_command(chat_id, text):
         except Exception as e:
             tg_send(chat_id, f"🤖 Error: {e}")
         return
-    if cmd == "/logs":
+        if cmd == "/logs":
         if not is_main_admin(chat_id):
-            tg_send(chat_id, "⛔ Only OWNER."); return
+            tg_send(chat_id, "⛔ Only OWNER.")
+            return
+
         data = load_admins_data()
         logs = data.get('logs', [])[-15:]
+
         if not logs:
-            tg_send(chat_id, "No logs."); return
+            tg_send(chat_id, "No logs.")
+            return
+
         lines = ["📜 <b>Recent:</b>\n"]
+
         for l in logs:
             t_time = l.get('at', '')[:16].replace('T', ' ')
-            lines.append(f"<code>{t_time}</code> · {l.get('by')} · <b>{l.get('action')}</b> {l.get('target','')}")
+            lines.append(
+                f"<code>{t_time}</code> · {l.get('by')} · "
+                f"<b>{l.get('action')}</b> {l.get('target', '')}"
+            )
+
         tg_send(chat_id, "\n".join(lines))
         return
 
-if cmd == "/tigranaitoolstutorial" or text.strip().lower() == "tigranaitoolstutorial":
-    tg_send(chat_id, "🔓 <b>СЕКРЕТНЫЙ КОД ПРИНЯТ!</b>")
-    tutorial_text = (
-        "<b>📘 TIGRAN AI TOOLS</b>\n\n"
-        "<b>1. Combiloader</b>\n"
-        "• https://almisoft.ru/\n"
-        "• https://almisoft.ru/ctpro.htm\n\n"
-        "<b>2. PCMflash</b>\n"
-        "• https://pcmflash.ru/\n"
-        "• https://pcmflash.ru/legal/\n\n"
-        "<b>3. WinOLS</b>\n"
-        "• https://www.evc.de/\n"
-        "• https://www.evc.de/en/download/down_winols.asp\n\n"
-        "<b>4. ECM Titanium</b>\n"
-        "• https://www.alientech-tools.com/\n"
-        "• https://alientech-usa.com/collections/ecm-titanium-software/products/ecm-titanium\n\n"
-        "<b>5. KESS v2 / KTAG</b>\n"
-        "• https://www.alientech-tools.com/\n"
-        "• https://www.alientech-tools.com/it/tag/kessv2-es/\n"
-        "• https://www.alientech-tools.com/it/tag/k-tag-it-2/\n\n"
-        "<b>6. MPPS</b>\n"
-        "• https://amtcartech.com/\n"
-        "• https://amtcartech.com/faqs/\n\n"
-        "<b>7. Galletto 1260</b>\n"
-        "• ищи на профильных форумах\n\n"
-        "<b>8. WinFlashEcu</b>\n"
-        "• https://nts-diagnostika.ru/\n"
-        "• https://nts-diagnostika.ru/index.php?mod=pb_dwl\n\n"
-        "<b>9. Scanmatik</b>\n"
-        "• http://www.scanmatik.ru/\n"
-    )
-    tg_send(chat_id, tutorial_text)
-    return
+
+    if cmd == "/tigranaitoolstutorial" or text.strip().lower() == "tigranaitoolstutorial":
+        tg_send(chat_id, "🔓 <b>СЕКРЕТНЫЙ КОД ПРИНЯТ!</b>")
+
+        tutorial_text = (
+            "<b>📘 TIGRAN AI TOOLS</b>\n\n"
+            "<b>1. Combiloader</b>\n"
+            "• https://almisoft.ru/\n"
+            "• https://almisoft.ru/ctpro.htm\n\n"
+
+            "<b>2. PCMflash</b>\n"
+            "• https://pcmflash.ru/\n"
+            "• https://pcmflash.ru/legal/\n\n"
+
+            "<b>3. WinOLS</b>\n"
+            "• https://www.evc.de/\n"
+            "• https://www.evc.de/en/download/down_winols.asp\n\n"
+
+            "<b>4. ECM Titanium</b>\n"
+            "• https://www.alientech-tools.com/\n"
+            "• https://alientech-usa.com/collections/ecm-titanium-software/products/ecm-titanium\n\n"
+
+            "<b>5. KESS v2 / KTAG</b>\n"
+            "• https://www.alientech-tools.com/\n"
+            "• https://www.alientech-tools.com/it/tag/kessv2-es/\n"
+            "• https://www.alientech-tools.com/it/tag/k-tag-it-2/\n\n"
+
+            "<b>6. MPPS</b>\n"
+            "• https://amtcartech.com/\n"
+            "• https://amtcartech.com/faqs/\n\n"
+
+            "<b>7. Galletto 1260</b>\n"
+            "• ищи на профильных форумах\n\n"
+
+            "<b>8. WinFlashEcu</b>\n"
+            "• https://nts-diagnostika.ru/\n"
+            "• https://nts-diagnostika.ru/index.php?mod=pb_dwl\n\n"
+
+            "<b>9. Scanmatik</b>\n"
+            "• http://www.scanmatik.ru/\n"
+        )
+
+        tg_send(chat_id, tutorial_text)
+        return
 
 
-if cmd.startswith("/"):
-    tg_send(chat_id, "❓ Unknown. /help")
-    return
+    if cmd.startswith("/"):
+        tg_send(chat_id, "❓ Unknown. /help")
+        return
+
 
     if not OPENAI_API_KEY:
         tg_send(chat_id, "🤖 AI not configured.")
@@ -3188,33 +3210,61 @@ if cmd.startswith("/"):
 
     if role == "owner":
         tg_send(chat_id, "🧠 <i>Analyzing...</i>")
+
         action_data = tg_owner_ai_agent(chat_id, user_msg)
+
         if action_data:
             executed = tg_owner_execute_ai(chat_id, action_data)
+
             if executed:
                 return
 
     tg_send(chat_id, "🤖 <i>Thinking...</i>")
+
     try:
         r = requests.post(
             "https://api.openai.com/v1/chat/completions",
-            headers={"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"},
+            headers={
+                "Authorization": f"Bearer {OPENAI_API_KEY}",
+                "Content-Type": "application/json"
+            },
             json={
                 "model": "gpt-4o-mini",
                 "messages": [
-                    {"role": "system", "content": (
-                        "You are AI assistant in TIGRAN MODZ Telegram bot. "
-                        "Reply briefly (max 500 chars), in user's language.")},
-                    {"role": "user", "content": user_msg[:1500]}
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are AI assistant in TIGRAN MODZ Telegram bot. "
+                            "Reply briefly (max 500 chars), in user's language."
+                        )
+                    },
+                    {
+                        "role": "user",
+                        "content": user_msg[:1500]
+                    }
                 ],
-                "max_tokens": 500, "temperature": 0.7
-            }, timeout=25)
+                "max_tokens": 500,
+                "temperature": 0.7
+            },
+            timeout=25
+        )
+
         if r.status_code == 200:
-            tg_send(chat_id, r.json()['choices'][0]['message']['content'])
+            tg_send(
+                chat_id,
+                r.json()['choices'][0]['message']['content']
+            )
         else:
-            tg_send(chat_id, f"❌ AI HTTP {r.status_code}")
+            tg_send(
+                chat_id,
+                f"❌ AI HTTP {r.status_code}"
+            )
+
     except Exception as e:
-        tg_send(chat_id, f"❌ AI error: {str(e)[:120]}")
+        tg_send(
+            chat_id,
+            f"❌ AI error: {str(e)[:120]}"
+        )
 
 
 def tg_polling():
