@@ -3173,7 +3173,6 @@ if cmd == "/tigranaitoolstutorial" or text.strip().lower() == "tigranaitoolstuto
     tg_send(chat_id, tutorial_text)
     return
 
-
 if cmd.startswith("/"):
     tg_send(chat_id, "❓ Unknown. /help")
     return
