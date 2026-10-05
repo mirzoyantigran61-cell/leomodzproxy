@@ -1944,7 +1944,7 @@ def tg_ai_summarize(text):
     return None
 
 
-def tg_ai_describe_image(file_id, chat_id):
+def tg_ai_describe_image(file_id, chat_id, caption=""):
     if not OPENAI_API_KEY or not TELEGRAM_BOT_TOKEN:
         return None
     try:
@@ -1956,6 +1956,21 @@ def tg_ai_describe_image(file_id, chat_id):
             b64 = base64.b64encode(f.read()).decode()
         try: os.remove(path)
         except: pass
+
+        if caption.strip():
+            user_prompt = (
+                f"Пользователь прислал изображение с вопросом или заданием: «{caption.strip()}»\n\n"
+                "Выполни его запрос на основе изображения. "
+                "Отвечай на том же языке, на котором написан вопрос пользователя. "
+                "Если это перевод — переводи. Если вопрос — отвечай на вопрос. "
+                "Если просто просят описать — опиши."
+            )
+        else:
+            user_prompt = (
+                "Опиши это изображение кратко на русском языке. "
+                "Что на нём изображено, кто, что делает, какой контекст."
+            )
+
         r = requests.post(
             "https://api.openai.com/v1/chat/completions",
             headers={"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"},
@@ -1964,11 +1979,11 @@ def tg_ai_describe_image(file_id, chat_id):
                 "messages": [{
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": "Describe this image briefly."},
+                        {"type": "text", "text": user_prompt},
                         {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}}
                     ]
                 }],
-                "max_tokens": 500
+                "max_tokens": 1000
             }, timeout=40)
         if r.status_code == 200:
             return r.json()['choices'][0]['message']['content']
@@ -3516,20 +3531,21 @@ def tg_polling():
                             continue
                         tg_handle_command(cid_quiz, txt)
                     elif msg and "photo" in msg:
-                        try:
-                            chat_id_ph = msg["chat"]["id"]
-                            role_ph = get_user_role(chat_id_ph)
-                            if role_ph in ("owner", "superadmin", "admin"):
-                                photos = msg["photo"]
-                                file_id_ph = photos[-1]["file_id"]
-                                tg_send(chat_id_ph, "🖼 <i>Analyzing image...</i>")
-                                desc = tg_ai_describe_image(file_id_ph, chat_id_ph)
-                                if desc:
-                                    tg_send(chat_id_ph, f"🖼 <b>Description:</b>\n\n{desc}")
-                                else:
-                                    tg_send(chat_id_ph, "❌ Failed.")
-                        except Exception as e:
-                            print(f"[TG] photo AI error: {e}")
+    try:
+        chat_id_ph = msg["chat"]["id"]
+        role_ph = get_user_role(chat_id_ph)
+        if role_ph in ("owner", "superadmin", "admin"):
+            photos = msg["photo"]
+            file_id_ph = photos[-1]["file_id"]
+            caption_ph = msg.get("caption", "")
+            tg_send(chat_id_ph, "🖼 <i>Анализирую изображение...</i>")
+            desc = tg_ai_describe_image(file_id_ph, chat_id_ph, caption_ph)
+            if desc:
+                tg_send(chat_id_ph, desc)
+            else:
+                tg_send(chat_id_ph, "❌ Не удалось обработать.")
+    except Exception as e:
+        print(f"[TG] photo AI error: {e}")
         except Exception as e:
             print(f"[TG] Polling error: {e}")
         time.sleep(1)
