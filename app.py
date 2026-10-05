@@ -3544,12 +3544,11 @@ def tg_polling():
                 tg_send(chat_id_ph, desc)
             else:
                 tg_send(chat_id_ph, "❌ Не удалось обработать.")
-    except Exception as e:
-        print(f"[TG] photo AI error: {e}")
-        except Exception as e:
-            print(f"[TG] Polling error: {e}")
-        time.sleep(1)
-
+                      except Exception as e:
+                          print(f"[TG] photo AI error: {e}")
+      except Exception as e:              ← 8 пробелов
+          print(f"[TG] Polling error: {e}")  ← 12 пробелов
+      time.sleep(1)                          ← 8 пробелов
 
 # ==================== FLASK ROUTES ====================
 def login_required(f):
