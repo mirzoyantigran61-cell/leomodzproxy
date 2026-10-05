@@ -3530,26 +3530,25 @@ def tg_polling():
                         if tg_check_guess(cid_quiz, txt):
                             continue
                         tg_handle_command(cid_quiz, txt)
-                    elif msg and "photo" in msg:
-    try:
-        chat_id_ph = msg["chat"]["id"]
-        role_ph = get_user_role(chat_id_ph)
-        if role_ph in ("owner", "superadmin", "admin"):
-            photos = msg["photo"]
-            file_id_ph = photos[-1]["file_id"]
-            caption_ph = msg.get("caption", "")
-            tg_send(chat_id_ph, "🖼 <i>Анализирую изображение...</i>")
-            desc = tg_ai_describe_image(file_id_ph, chat_id_ph, caption_ph)
-            if desc:
-                tg_send(chat_id_ph, desc)
-            else:
-                tg_send(chat_id_ph, "❌ Не удалось обработать.")
-                      except Exception as e:
-                          print(f"[TG] photo AI error: {e}")
-      except Exception as e:              ← 8 пробелов
-          print(f"[TG] Polling error: {e}")  ← 12 пробелов
-      time.sleep(1)                          ← 8 пробелов
-
+                                elif msg and "photo" in msg:
+                try:
+                    chat_id_ph = msg["chat"]["id"]
+                    role_ph = get_user_role(chat_id_ph)
+                    if role_ph in ("owner", "superadmin", "admin"):
+                        photos = msg["photo"]
+                        file_id_ph = photos[-1]["file_id"]
+                        caption_ph = msg.get("caption", "")
+                        tg_send(chat_id_ph, "🖼 <i>Анализирую изображение...</i>")
+                        desc = tg_ai_describe_image(file_id_ph, chat_id_ph, caption_ph)
+                        if desc:
+                            tg_send(chat_id_ph, desc)
+                        else:
+                            tg_send(chat_id_ph, "❌ Не удалось обработать.")
+                except Exception as e:
+                    print(f"[TG] photo AI error: {e}")
+except Exception as e:
+    print(f"[TG] Polling error: {e}")
+time.sleep(1)
 # ==================== FLASK ROUTES ====================
 def login_required(f):
     @wraps(f)
