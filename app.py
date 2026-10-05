@@ -4274,8 +4274,8 @@ def api_toggle():
             'gameplay_extra': 'GAMEPLAY_EXTRA',
 }
 config_key = feature_map.get(feature)
-    if not config_key:
-        return jsonify({"error": "RECURSO INVÁLIDO"}), 400
+if not config_key:
+  return jsonify({"error": "RECURSO INVÁLIDO"}), 400
     config = get_user_config(client_ip)
     config[config_key] = value
     save_data()
