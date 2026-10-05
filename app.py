@@ -1792,50 +1792,50 @@ def get_overrides_for_ip(client_ip):
     if config.get("VEHICLE_PRO_V3", False):
         overrides.update(VEHICLE_PRO_V3_OVERRIDES)
     if config.get("BALLISTIC_PRO", False):
-    overrides.update(BALLISTIC_PRO_OVERRIDES)
+        overrides.update(BALLISTIC_PRO_OVERRIDES)
 # ==================== v4 модули ====================
-if config.get("EMOTE_MASTER", False):
-    overrides.update(EMOTE_MASTER_OVERRIDES)
-if config.get("SILENT_SELF", False):
-    overrides.update(SILENT_SELF_OVERRIDES)
-if config.get("AWARE_ENEMY", False):
-    overrides.update(AWARE_ENEMY_OVERRIDES)
-if config.get("UAV_SUPER", False):
-    overrides.update(UAV_SUPER_OVERRIDES)
-if config.get("SPECTATOR_PRO", False):
-    overrides.update(SPECTATOR_PRO_OVERRIDES)
-if config.get("JUMPPAD_GOD", False):
-    overrides.update(JUMPPAD_GOD_OVERRIDES)
-if config.get("GLIDER_PRO", False):
-    overrides.update(GLIDER_PRO_OVERRIDES)
-if config.get("PHOTO_MODE_PRO", False):
-    overrides.update(PHOTO_MODE_PRO_OVERRIDES)
-if config.get("AUTO_AIM_PRO", False):
-    overrides.update(AUTO_AIM_PRO_OVERRIDES)
-if config.get("VEHICLE_GOD", False):
-    overrides.update(VEHICLE_GOD_OVERRIDES)
-if config.get("HIT_SHOW_PRO", False):
-    overrides.update(HIT_SHOW_PRO_OVERRIDES)
-if config.get("MULTI_PING_PRO", False):
-    overrides.update(MULTI_PING_PRO_OVERRIDES)
-if config.get("MOVEMENT_MASTER_PRO", False):
-    overrides.update(MOVEMENT_MASTER_PRO_OVERRIDES)
-if config.get("REPLAY_PRO", False):
-    overrides.update(REPLAY_PRO_OVERRIDES)
-if config.get("VIEW_DISTANCE_PRO", False):
-    overrides.update(VIEW_DISTANCE_PRO_OVERRIDES)
-if config.get("UI_AUDIO_PRO", False):
-    overrides.update(UI_AUDIO_PRO_OVERRIDES)
-if config.get("HITMARKER_PRO", False):
-    overrides.update(HITMARKER_PRO_OVERRIDES)
-if config.get("MAP_MARKER_PRO", False):
-    overrides.update(MAP_MARKER_PRO_OVERRIDES)
-if config.get("FULL_VISUAL_PRO", False):
-    overrides.update(FULL_VISUAL_PRO_OVERRIDES)
-if config.get("FAST_UI_PRO", False):
-    overrides.update(FAST_UI_PRO_OVERRIDES)
-if config.get("GAMEPLAY_EXTRA", False):
-    overrides.update(GAMEPLAY_EXTRA_OVERRIDES)
+    if config.get("EMOTE_MASTER", False):
+        overrides.update(EMOTE_MASTER_OVERRIDES)
+    if config.get("SILENT_SELF", False):
+        overrides.update(SILENT_SELF_OVERRIDES)
+    if config.get("AWARE_ENEMY", False):
+        overrides.update(AWARE_ENEMY_OVERRIDES)
+    if config.get("UAV_SUPER", False):
+        overrides.update(UAV_SUPER_OVERRIDES)
+    if config.get("SPECTATOR_PRO", False):
+        overrides.update(SPECTATOR_PRO_OVERRIDES)
+    if config.get("JUMPPAD_GOD", False):
+        overrides.update(JUMPPAD_GOD_OVERRIDES)
+    if config.get("GLIDER_PRO", False):
+        overrides.update(GLIDER_PRO_OVERRIDES)
+    if config.get("PHOTO_MODE_PRO", False):
+        overrides.update(PHOTO_MODE_PRO_OVERRIDES)
+    if config.get("AUTO_AIM_PRO", False):
+        overrides.update(AUTO_AIM_PRO_OVERRIDES)
+    if config.get("VEHICLE_GOD", False):
+        overrides.update(VEHICLE_GOD_OVERRIDES)
+    if config.get("HIT_SHOW_PRO", False):
+        overrides.update(HIT_SHOW_PRO_OVERRIDES)
+    if config.get("MULTI_PING_PRO", False):
+        overrides.update(MULTI_PING_PRO_OVERRIDES)
+    if config.get("MOVEMENT_MASTER_PRO", False):
+        overrides.update(MOVEMENT_MASTER_PRO_OVERRIDES)
+    if config.get("REPLAY_PRO", False):
+        overrides.update(REPLAY_PRO_OVERRIDES)
+    if config.get("VIEW_DISTANCE_PRO", False):
+        overrides.update(VIEW_DISTANCE_PRO_OVERRIDES)
+    if config.get("UI_AUDIO_PRO", False):
+        overrides.update(UI_AUDIO_PRO_OVERRIDES)
+    if config.get("HITMARKER_PRO", False):
+        overrides.update(HITMARKER_PRO_OVERRIDES)
+    if config.get("MAP_MARKER_PRO", False):
+        overrides.update(MAP_MARKER_PRO_OVERRIDES)
+    if config.get("FULL_VISUAL_PRO", False):
+        overrides.update(FULL_VISUAL_PRO_OVERRIDES)
+    if config.get("FAST_UI_PRO", False):
+        overrides.update(FAST_UI_PRO_OVERRIDES)
+    if config.get("GAMEPLAY_EXTRA", False):
+        overrides.update(GAMEPLAY_EXTRA_OVERRIDES)
 return overrides
 
 def sha1_b64(data):
