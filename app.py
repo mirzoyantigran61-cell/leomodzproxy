@@ -3738,22 +3738,7 @@ def tg_handle_command(chat_id, text):
         tg_poll_create(chat_id, parts_p[0], parts_p[1:])
         return
         
-    if cmd == "/donate":
-    donate_url = "https://www.donationalerts.com/r/tigranmods_2010hack"
-    text = (
-        f"💎 <b>Поддержать проект</b>\n\n"
-        f"Твой ID: <code>{chat_id}</code>\n\n"
-        f"<b>Как задонатить:</b>\n"
-        f"1️⃣ Перейди по ссылке ниже\n"
-        f"2️⃣ Введи сумму\n"
-        f"3️⃣ В поле <b>«Сообщение»</b> вставь свой ID:\n"
-        f"<code>{chat_id}</code>\n"
-        f"4️⃣ Оплати — ключ выдастся автоматически ✅\n\n"
-        f"🌐 Или открой веб-версию: https://tigranxleomodzofficial-production.up.railway.app/donate"
-    )
-    buttons = [[{"text": "💎 Открыть DonationAlerts", "url": donate_url}]]
-    tg_send_buttons(chat_id, text, buttons)
-    return
+     
 
     if cmd == "/bonus":
         tg_send(chat_id, tg_daily_bonus(chat_id))
