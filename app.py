@@ -3740,7 +3740,7 @@ def tg_handle_command(chat_id, text):
         
     if cmd == "/donate":
         donate_url = "https://www.donationalerts.com/r/tigranmods_2010hack"
-           text = (
+         text = (
         f"💎 <b>Поддержать проект</b>\n\n"
         f"Твой ID: <code>{chat_id}</code>\n\n"
         f"<b>Как задонатить:</b>\n"
