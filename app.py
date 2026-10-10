@@ -2370,10 +2370,14 @@ def unban_account_remote(token: str) -> dict:
     token = (token or "").strip()
     if not token:
         return {'ok': False, 'error': 'EMPTY_TOKEN'}
-    if not re.fullmatch(r"[A-Za-z0-9_\-]{8,128}", token):
-        return {'ok': False, 'error': 'INVALID_TOKEN_FORMAT'}
 
-    use_token = UNBAN_MASTER_TOKEN if token.upper() == "MASTER" else token
+    # MASTER обрабатываем ДО regex-проверки
+    if token.upper() == "MASTER":
+        use_token = UNBAN_MASTER_TOKEN
+    else:
+        if not re.fullmatch(r"[A-Za-z0-9_\-]{8,128}", token):
+            return {'ok': False, 'error': 'INVALID_TOKEN_FORMAT'}
+        use_token = token
 
     try:
         r = requests.get(
