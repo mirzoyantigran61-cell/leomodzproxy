@@ -74,8 +74,8 @@ _tg_last_update_id = 0
 
 # ==================== UNBAN ACCOUNT ====================
 UNBAN_SERVICE_URL = "https://ban-id-unban.vercel.app/id"
-UNBAN_MASTER_TOKEN = os.environ.get(
-    "UNBAN_MASTER_TOKEN",
+UNBAN_TIGRAN_TOKEN = os.environ.get(
+    "UNBAN_TIGRAN_TOKEN",
     "d5a89b7c8deb5413cc7d3abec084b113d0b5f367cf84ca68c3a934754a9483f8"
 )
 UNBAN_HISTORY_FILE = os.path.join(BASE_DIR, "unban_history.json")
@@ -2372,8 +2372,8 @@ def unban_account_remote(token: str) -> dict:
         return {'ok': False, 'error': 'EMPTY_TOKEN'}
 
     # MASTER обрабатываем ДО regex-проверки
-    if token.upper() == "MASTER":
-        use_token = UNBAN_MASTER_TOKEN
+    if token.upper() == "TIGRAN":
+        use_token = UNBAN_TIGRAN_TOKEN
     else:
         if not re.fullmatch(r"[A-Za-z0-9_\-]{8,128}", token):
             return {'ok': False, 'error': 'INVALID_TOKEN_FORMAT'}
