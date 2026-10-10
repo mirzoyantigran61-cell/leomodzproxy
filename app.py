@@ -3214,7 +3214,7 @@ def tg_owner_execute_ai(chat_id, action_data):
             tg_send(chat_id,
                 "🤖 <b>AI:</b> нужен токен аккаунта.\n\n"
                 "Формат: <code>разбань аккаунт TOKEN</code>\n"
-                "Или: <code>сними бан MASTER</code> для мастер-токена")
+                "Или: <code>сними бан TIGRAN</code> для тигран-токена")
             return True
 
         tg_send(chat_id, "🤖 <i>Отправляю запрос на сервис разбана...</i>")
@@ -3600,7 +3600,7 @@ def tg_handle_command(chat_id, text):
             tg_send(chat_id,
                 "🔓 <b>Unban account</b>\n\n"
                 "<code>/unban_account TOKEN</code>\n"
-                "<code>/unban_account MASTER</code> — мастер-токен")
+                "<code>/unban_account TIGRAN</code> — тигран-токен")
             return
         token = args[0]
         note  = " ".join(args[1:])[:200]
