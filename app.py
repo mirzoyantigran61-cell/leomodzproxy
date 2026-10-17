@@ -47,6 +47,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PORT = int(os.environ.get('PORT', 10000))
 ADMIN_USER = "TIGRANMDZ"
 ADMIN_PASS = "LEOMODZBRO"
+ADMIN_USER2 = "TIGRANMDZ"
+ADMIN_PASS2 = "AnkitxLiveSuperAdmin"
 
 _saved_pass = None
 try:
