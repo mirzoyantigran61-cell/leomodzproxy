@@ -1859,62 +1859,64 @@ def modify_ver_response(response_text, client_ip):
         data["cdn_url"] = cdn_url
         data["backup_cdn_url"] = cdn_url
         data["abhotupdate_cdn_url"] = cdn_url
+        
         overrides = get_overrides_for_ip(client_ip)
-if overrides:
-    gamevar = data.get("gamevar", "")
-    
-    # ==================== ОБХОДЫ ИЗ r.py ====================
-    # Добавляем \n в начале, чтобы не сломать предыдущую строку
-    gamevar += "\nEnableLocalColliderAntiHack,bool,true,," \
-               "\nEnableLocalColliderValidation,bool,true,," \
-               "\nEnableFileInfoEncryptionAndroid,bool,true,," \
-               "\nEnableFileInfoEncryptionIOS,bool,true,," \
-               "\nEnableCheckFileStates,bool,true,," \
-               "\nEnableGGPDecryptFailureProtection,bool,true,," \
-               "\nFFAntihackDefenceLevel,string,0,," \
-               "\nCleanFFAntiState,bool,true,," \
-               "\nDisableGinInfoSend,int,1,," \
-               "\nAntiHackResetSubgameInterval,int,0,," \
-               "\nFFAntihackDisabledRegions,string,US,CN,TW,TH,VN,ID,PT,ES,RU,KR,FR,DE,TR,IN,JP,RO,SA,MM,PK,BD,MY,," \
-               "\nFFAntihackDisabledClientVariant,string,ClientUsingVersion_NONE,ClientUsingVersion_NORMAL,ClientUsingVersion_MAX,ClientUsingVersion_FFI,ClientUsingVersion_MAX_HPE,ClientUsingVersion_FFVN,," \
-               "\nFFAntihackEmulatorCheckDisbaledClientVariant,string,ClientUsingVersion_NONE,ClientUsingVersion_NORMAL,ClientUsingVersion_MAX,ClientUsingVersion_FFI,ClientUsingVersion_MAX_HPE,ClientUsingVersion_FFVN,," \
-               "\nBanStateDisabledArea,string,US,CN,TW,TH,VN,ID,PT,ES,RU,KR,FR,DE,TR,IN,JP,RO,SA,MM,PK,BD,MY,," \
-               "\nEnableCheckOverlapWithSantioDummy,bool,false,," \
-               "\nEnableIngameQuickReport,bool,false,," \
-               "\nEnablePlatformCheck,bool,false,," \
-               "\nEnableMMKPlatformCheck,bool,false,," \
-               "\nEnableSupCheck,bool,false,," \
-               "\nOptionalDeepFileCheck,bool,false,," \
-               "\nOptionalDownloadHashCheckOpen,bool,false,," \
-               "\nEnableNativeCheck,bool,false,," \
-               "\nCheckHacker,bool,false,," \
-               "\nDebugHack,bool,false,," \
-               "\nTestModeEnabled,bool,true,," \
-               "\nEarlyInitGGP,bool,false,," \
-               "\nNeedProcessAH,bool,true,," \
-               "\nShowHighFrameRateSetting,bool,true,," \
-               "\nReal60FrameSwitch,bool,true,," \
-               "\nIsAlbumScreenShotNeedAntiMod,bool,false,," \
-               "\nEnableIceWallHacker,bool,false,," \
-               "\nEnableIceWallHackerKill,bool,false,," \
-               "\nEnableHipHackerKill,bool,false,," \
-               "\nEnableSendHackStoreLog,bool,false,," \
-               "\nBugReportMaxCountPerSession,int,0,," \
-               "\nEnableBugReportEarly,int,0,," \
-               "\nEnableBugReportTime,bool,false,," \
-               "\nReportee_Damager_RecentlyMaxCnt,int,0,," \
-               "\nReportee_Killer_RecentlyMaxCnt,int,0,," \
-               "\nKickUserInMatchGame,bool,false,," \
-               "\nBlocklistMaxNum,int,0,," \
-               "\nEnableFileCacherReadOpt,bool,false,," \
-               "\nEnableFileCacherReadOpt_2022,bool,false,,"
-    # ======================================================
+        if overrides:
+            gamevar = data.get("gamevar", "")
+            
+            # ==================== ОБХОДЫ ИЗ r.py ====================
+            gamevar += "\nEnableLocalColliderAntiHack,bool,true,," \
+                       "\nEnableLocalColliderValidation,bool,true,," \
+                       "\nEnableFileInfoEncryptionAndroid,bool,true,," \
+                       "\nEnableFileInfoEncryptionIOS,bool,true,," \
+                       "\nEnableCheckFileStates,bool,true,," \
+                       "\nEnableGGPDecryptFailureProtection,bool,true,," \
+                       "\nFFAntihackDefenceLevel,string,0,," \
+                       "\nCleanFFAntiState,bool,true,," \
+                       "\nDisableGinInfoSend,int,1,," \
+                       "\nAntiHackResetSubgameInterval,int,0,," \
+                       "\nFFAntihackDisabledRegions,string,US,CN,TW,TH,VN,ID,PT,ES,RU,KR,FR,DE,TR,IN,JP,RO,SA,MM,PK,BD,MY,," \
+                       "\nFFAntihackDisabledClientVariant,string,ClientUsingVersion_NONE,ClientUsingVersion_NORMAL,ClientUsingVersion_MAX,ClientUsingVersion_FFI,ClientUsingVersion_MAX_HPE,ClientUsingVersion_FFVN,," \
+                       "\nFFAntihackEmulatorCheckDisbaledClientVariant,string,ClientUsingVersion_NONE,ClientUsingVersion_NORMAL,ClientUsingVersion_MAX,ClientUsingVersion_FFI,ClientUsingVersion_MAX_HPE,ClientUsingVersion_FFVN,," \
+                       "\nBanStateDisabledArea,string,US,CN,TW,TH,VN,ID,PT,ES,RU,KR,FR,DE,TR,IN,JP,RO,SA,MM,PK,BD,MY,," \
+                       "\nEnableCheckOverlapWithSantioDummy,bool,false,," \
+                       "\nEnableIngameQuickReport,bool,false,," \
+                       "\nEnablePlatformCheck,bool,false,," \
+                       "\nEnableMMKPlatformCheck,bool,false,," \
+                       "\nEnableSupCheck,bool,false,," \
+                       "\nOptionalDeepFileCheck,bool,false,," \
+                       "\nOptionalDownloadHashCheckOpen,bool,false,," \
+                       "\nEnableNativeCheck,bool,false,," \
+                       "\nCheckHacker,bool,false,," \
+                       "\nDebugHack,bool,false,," \
+                       "\nTestModeEnabled,bool,true,," \
+                       "\nEarlyInitGGP,bool,false,," \
+                       "\nNeedProcessAH,bool,true,," \
+                       "\nShowHighFrameRateSetting,bool,true,," \
+                       "\nReal60FrameSwitch,bool,true,," \
+                       "\nIsAlbumScreenShotNeedAntiMod,bool,false,," \
+                       "\nEnableIceWallHacker,bool,false,," \
+                       "\nEnableIceWallHackerKill,bool,false,," \
+                       "\nEnableHipHackerKill,bool,false,," \
+                       "\nEnableSendHackStoreLog,bool,false,," \
+                       "\nBugReportMaxCountPerSession,int,0,," \
+                       "\nEnableBugReportEarly,int,0,," \
+                       "\nEnableBugReportTime,bool,false,," \
+                       "\nReportee_Damager_RecentlyMaxCnt,int,0,," \
+                       "\nReportee_Killer_RecentlyMaxCnt,int,0,," \
+                       "\nKickUserInMatchGame,bool,false,," \
+                       "\nBlocklistMaxNum,int,0,," \
+                       "\nEnableFileCacherReadOpt,bool,false,," \
+                       "\nEnableFileCacherReadOpt_2022,bool,false,,"
+            # ======================================================
 
-    for var_name, override in overrides.items():
-        gamevar += f"\n{var_name},{var_name},{override['var_type']},{override['var_value']},,"
-    data["gamevar"] = gamevar
+            for var_name, override in overrides.items():
+                gamevar += f"\n{var_name},{var_name},{override['var_type']},{override['var_value']},,"
+            data["gamevar"] = gamevar
+            
         return json.dumps(data)
-    except:
+    except Exception as e:
+        print(f"[VER ERROR] {e}")
         return response_text
 
 
